@@ -95,3 +95,53 @@ exports.rejectDoctor = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// @desc    Get all patients for management
+exports.getAllPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find({}).select('-password');
+    res.json(patients);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @desc    Delete a patient account
+exports.deletePatient = async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+
+    await Patient.findByIdAndDelete(req.params.id);
+    res.json({ message: "Patient account deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.toggleDoctorBlock = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+
+    doctor.isBlocked = !doctor.isBlocked;
+    await doctor.save();
+
+    res.json({ message: `Doctor ${doctor.isBlocked ? 'blocked' : 'unblocked'} successfully`, doctor });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @desc    Toggle Block/Unblock for a Patient
+exports.togglePatientBlock = async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+
+    patient.isBlocked = !patient.isBlocked;
+    await patient.save();
+
+    res.json({ message: `Patient ${patient.isBlocked ? 'blocked' : 'unblocked'} successfully`, patient });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

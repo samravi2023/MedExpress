@@ -76,8 +76,11 @@ exports.login = async (req, res) => {
     if (role === 'doctor') user = await Doctor.findOne({ email });
     else if (role === 'patient') user = await Patient.findOne({ email });
     else user = await Admin.findOne({ username: email });
-
+    console.log("Admin Logged in succesfully:", res.data);
     if (user && (await bcrypt.compare(password, user.password))) {
+      if (user.isBlocked) {
+        return res.status(403).json({ message: "Your account has been blocked by the administrator." });
+      }
       if (role === 'doctor' && (!user.isVerified || !user.doctorUniqueId)) {
         return res.status(403).json({
           message: 'Doctor account pending admin verification. Login is enabled only after approval and doctor ID generation.'

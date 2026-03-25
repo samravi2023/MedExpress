@@ -14,7 +14,8 @@ const PatientSchema = new mongoose.Schema({
   },
 
   // Emergency Contact (For the "108" / Panic Button feature)
-  emergencyContact: { type: String, default: "108" }
+  emergencyContact: { type: String, default: "108" },
+  isBlocked: { type: Boolean, default: false } // Add this line
 });
 
 // Index for finding patients nearby (if needed later)

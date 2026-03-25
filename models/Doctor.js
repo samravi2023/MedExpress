@@ -26,6 +26,8 @@ const DoctorSchema = new mongoose.Schema({
   rejectionReason: { type: String },
   verificationSubmittedAt: { type: Date, default: Date.now },
   verifiedAt: { type: Date },
+  isBlocked: { type: Boolean, default: false }, // Add this line
+
 
   // LOCATION (The most important part for "Zepto" Logic)
   location: {
